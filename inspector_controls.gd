@@ -68,18 +68,12 @@ func _on_shift_button_pressed(shift_input: SpinBox, anim_player: AnimationPlayer
 	var current_anim_name = anim_player.current_animation
 	print("[AnimationKeyShifter] Current animation property: '%s'" % current_anim_name)
 
-	# If no animation is set, try to find one
+	# If no animation is set, return an error
 	if current_anim_name == "":
 		var anim_list = anim_player.get_animation_list()
 		print("[AnimationKeyShifter] Available animations: %s" % anim_list)
-
-		if anim_list.size() == 0:
-			print("[AnimationKeyShifter] ERROR: No animations found in AnimationPlayer")
-			return
-
-		# Use the first animation
-		current_anim_name = anim_list[0]
-		print("[AnimationKeyShifter] Using first animation: '%s'" % current_anim_name)
+		print("[AnimationKeyShifter] ERROR: No animation selected. Please select an animation in the AnimationPlayer inspector's 'Current Animation' field")
+		return
 
 	var animation = anim_player.get_animation(current_anim_name)
 	if not animation:
