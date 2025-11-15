@@ -27,11 +27,11 @@ A Godot 4.x editor plugin that allows you to batch shift animation keyframe valu
 
 1. Select an `AnimationPlayer` node in your scene
 2. In the Inspector, scroll to the bottom to find the "Shift All Keyframe Values" section
-3. Set the "Current Animation" property in the AnimationPlayer inspector (not in the Animation panel)
+3. Use the "Select Animation:" dropdown to choose which animation to modify
 4. Enter a shift amount (positive or negative integer)
-5. Click "Apply" to shift all numeric keyframes in the current animation
+5. Click "Apply" to shift all numeric keyframes in the selected animation
 
-**Important**: The plugin operates on the animation selected in the AnimationPlayer inspector's "Current Animation" property, not the animation selected in the bottom Animation panel.
+**Note**: The dropdown will automatically select the current animation if one is set in the AnimationPlayer, but you can choose any animation from the list.
 
 ## The Problem This Solves
 

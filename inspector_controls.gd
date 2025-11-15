@@ -19,6 +19,25 @@ func _parse_end(obj: Object):
 	# Create the shift controls
 	var shift_container = VBoxContainer.new()
 
+	# Animation selection dropdown
+	var anim_label = Label.new()
+	anim_label.text = "Select Animation:"
+	shift_container.add_child(anim_label)
+
+	var anim_dropdown = OptionButton.new()
+	anim_dropdown.name = "AnimationDropdown"
+	anim_dropdown.custom_minimum_size = Vector2(0, 26)
+	var anim_list = obj.get_animation_list()
+	for anim_name in anim_list:
+		anim_dropdown.add_item(anim_name)
+	# Select the current animation if one is set
+	if obj.current_animation != "":
+		for i in range(anim_dropdown.item_count):
+			if anim_dropdown.get_item_text(i) == obj.current_animation:
+				anim_dropdown.selected = i
+				break
+	shift_container.add_child(anim_dropdown)
+
 	# Shift amount input
 	var shift_label = Label.new()
 	shift_label.text = "Shift Amount (integer):"
@@ -40,7 +59,7 @@ func _parse_end(obj: Object):
 	var shift_button := Button.new()
 	shift_button.text = "Apply"
 	shift_button.custom_minimum_size = Vector2(0, 32)
-	shift_button.pressed.connect(_on_shift_button_pressed.bind(shift_input, obj))
+	shift_button.pressed.connect(_on_shift_button_pressed.bind(shift_input, anim_dropdown, obj))
 
 	var button_style = StyleBoxFlat.new()
 	button_style.bg_color = Color(32.0/255.0, 37.0/255.0, 49.0/255.0)
@@ -55,7 +74,7 @@ func _parse_end(obj: Object):
 
 	add_custom_control(container)
 
-func _on_shift_button_pressed(shift_input: SpinBox, anim_player: AnimationPlayer):
+func _on_shift_button_pressed(shift_input: SpinBox, anim_dropdown: OptionButton, anim_player: AnimationPlayer):
 	print("[AnimationKeyShifter] === Shift button pressed ===")
 	var shift_amount = int(shift_input.value)
 	print("[AnimationKeyShifter] Shift amount: %d" % shift_amount)
@@ -64,16 +83,13 @@ func _on_shift_button_pressed(shift_input: SpinBox, anim_player: AnimationPlayer
 		print("[AnimationKeyShifter] Shift amount is 0, no changes made")
 		return
 
-	# Get the current animation from the AnimationPlayer
-	var current_anim_name = anim_player.current_animation
-	print("[AnimationKeyShifter] Current animation property: '%s'" % current_anim_name)
-
-	# If no animation is set, return an error
-	if current_anim_name == "":
-		var anim_list = anim_player.get_animation_list()
-		print("[AnimationKeyShifter] Available animations: %s" % anim_list)
-		print("[AnimationKeyShifter] ERROR: No animation selected. Please select an animation in the AnimationPlayer inspector's 'Current Animation' field")
+	# Get the selected animation from the dropdown
+	if anim_dropdown.selected == -1:
+		print("[AnimationKeyShifter] ERROR: No animation selected in dropdown")
 		return
+
+	var current_anim_name = anim_dropdown.get_item_text(anim_dropdown.selected)
+	print("[AnimationKeyShifter] Selected animation: '%s'" % current_anim_name)
 
 	var animation = anim_player.get_animation(current_anim_name)
 	if not animation:
